@@ -58,7 +58,7 @@ public class InfixToPosfix {
         ArrayList<Integer> numDigit = new ArrayList<>();
         for (int i = 0; i < s.length(); i++) {
             // if character is a value
-            if (Character.isDigit(s.charAt(i))) {
+            if (Character.isDigit(s.charAt(i)) == true) {
                 for (int j = 0; j < 10; j++) {
                     if (s.charAt(i) == numInChar[j]) {
                         operandStack.push(num[j]);
