@@ -1,4 +1,4 @@
-package DSA.Lab3;
+package Lab3;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -6,31 +6,41 @@ import java.util.Stack;
 public class InfixToPosfix {
     private String s;
     Stack<Integer> operandStack = new Stack<>();
-    Stack<Character> operatorStack = new Stack<>();
-    char[] numInChar = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-    int[] num = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-    char[] operator = { '+', '-', '*', '/' };
+    Stack<String> operatorStack = new Stack<>();
+    String[] operator = { "+", "-", "*", "/" };
+    ArrayList<String> arr = new ArrayList<>();
 
     public InfixToPosfix(String str) {
         this.s = str;
+        String value = "";
+        for (int i = 0; i < s.length(); i++) {
+            if (Character.isDigit(s.charAt(i))) {
+                value += s.charAt(i);
+            } else if (s.charAt(i) != ' ') {
+                arr.add(value);
+                value = "";
+                arr.add(String.valueOf(s.charAt(i)));
+            }
+        }
+        arr.add(value);
     }
 
     private void Computing() {
         int value = 0;
         int a = operandStack.pop();
         int b = operandStack.pop();
-        char x = operatorStack.pop();
+        String x = operatorStack.pop();
         switch (x) {
-        case '+':
+        case "+":
             value = b + a;
             break;
-        case '-':
+        case "-":
             value = b - a;
             break;
-        case '*':
+        case "*":
             value = b * a;
             break;
-        case '/':
+        case "/":
             value = b / a;
             break;
         default:
@@ -38,67 +48,69 @@ public class InfixToPosfix {
         operandStack.push(value);
     }
 
-    static int precedence(char c) {
+    static int precedence(String c) {
         switch (c) {
-        case '+':
-        case '-':
+        case "+":
+        case "-":
             return 1;
-        case '*':
-        case '/':
+        case "*":
+        case "/":
             return 2;
-        case '^':
+        case "^":
             return 3;
         }
         return -1;
     }
 
+    public boolean CheckInteger(String a) {
+        int count = 0;
+        for (int i = 0; i < a.length(); i++) {
+            if (Character.isDigit(a.charAt(i))) {
+                count++;
+            }
+        }
+        if (count == a.length()) {
+            return true;
+        }
+        return false;
+    }
+
     public int Calculate() {
         int finalValue = 0;
-        int digitNumber = 0;
-        ArrayList<Integer> numDigit = new ArrayList<>();
-        for (int i = 0; i < s.length(); i++) {
+        for (int i = 0; i < arr.size(); i++) {
             // if character is a value
-            if (Character.isDigit(s.charAt(i)) == true) {
-                for (int j = 0; j < 10; j++) {
-                    if (s.charAt(i) == numInChar[j]) {
-                        operandStack.push(num[j]);
-                    }
-                }
+            if (CheckInteger(arr.get(i)) == true) {
+                operandStack.push(Integer.parseInt(arr.get(i)));
             } else {
                 // if character is a operator
-                for (int j = 0; j < 4; j++) {
-                    if (s.charAt(i) == operator[j]) {
-                        if (operatorStack.isEmpty() == true) {
-                            operatorStack.push(operator[j]);
-                        } else {
-                            if (precedence(s.charAt(i)) >= precedence(operatorStack.peek())) {
-                                operatorStack.push(s.charAt(i));
-                            } else {
-                                while (precedence(s.charAt(i)) < precedence(operatorStack.peek())
-                                        && operatorStack.isEmpty() == false) {
-                                    Computing();
-                                    operatorStack.push(s.charAt(i));
-                                }
-                            }
+                if (operatorStack.isEmpty() == true) {
+                    operatorStack.push(arr.get(i));
+                } else {
+                    if (precedence(arr.get(i)) >= precedence(operatorStack.peek())) {
+                        operatorStack.push(arr.get(i));
+                    } else {
+                        while (precedence(arr.get(i)) < precedence(operatorStack.peek())
+                                && operatorStack.isEmpty() == false) {
+                            Computing();
+                            operatorStack.push(arr.get(i));
                         }
                     }
                 }
-                if (s.charAt(i) == '(') {
-                    operatorStack.push(s.charAt(i));
+            }
+            if (arr.get(i) == "(") {
+                operatorStack.push(arr.get(i));
+            }
+            if (arr.get(i) == ")") {
+                while (operatorStack.peek() != "(") {
+                    Computing();
                 }
-                if (s.charAt(i) == ')') {
-                    while (operatorStack.peek() != '(') {
-                        Computing();
-                    }
-                    operatorStack.pop();
-                }
+                operatorStack.pop();
             }
         }
-        while (operatorStack.isEmpty() == false) {
+        while (operatorStack.isEmpty() == false && operandStack.isEmpty() == false) {
             Computing();
         }
         finalValue = operandStack.pop();
         return finalValue;
-
     }
 }
