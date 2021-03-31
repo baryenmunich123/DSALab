@@ -33,7 +33,7 @@ public class CircularLinkedList {
     }
 
     public void delete(int data) {
-        System.out.println("After delete: ");
+        // System.out.println("After delete: ");
         if (last == null) {
             System.out.println("Nothing to delete");
         }
@@ -90,7 +90,8 @@ public class CircularLinkedList {
             count++;
             if (count == 3) {
                 System.out.print(current.next.data + " ");
-                current = current.next.next;
+                delete(current.next.data);
+                current = current.next;
                 count = 0;
                 size--;
             } else {

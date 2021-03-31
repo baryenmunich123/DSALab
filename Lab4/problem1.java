@@ -10,7 +10,7 @@ public class problem1 {
         list.insert(5);
         list.display();
 
-        list.delete(2);
+        list.delete(4);
         list.display();
 
         System.out.println("The position of the 4 is: " + list.search(4));
