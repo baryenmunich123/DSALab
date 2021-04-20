@@ -4,10 +4,10 @@ import java.util.Scanner;
 
 public class problem7 {
     public static int findsum (int a[], int n){
-        if (n == 0)
-            return 0;
+        if (n == 1)
+            return a[0];
         else 
-            return n + findsum(a,n - 1);
+            return a[n - 1] + findsum(a,n - 1);
     }
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
